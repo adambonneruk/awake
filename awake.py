@@ -7,7 +7,7 @@ from pyautogui import press
 from key_state import is_scrolllock
 
 #Enabled/Disable Debug Mode
-DEBUGMODE = True
+DEBUGMODE = False
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUG MODE ACTIVE")
@@ -32,7 +32,12 @@ def main():
     window.resizable(0, 0) #no maximise button
     window.title("Keep Awake")
     window.iconbitmap("./icon/awake-icon.ico")
-    window.geometry("256x64")
+    window.geometry("256x256")
+
+    #Add an Image
+    img = tk.PhotoImage(file="img/background.png")
+    img_label = tk.Label(window, image=img)
+    img_label.pack()
 
     #Launch Second (Scroll Lock Button Pressing) Thread
     thread = threading.Thread(target=second_thread)
