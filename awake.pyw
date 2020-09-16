@@ -4,7 +4,6 @@ import time
 import logging
 import tkinter as tk
 from pyautogui import press
-from key_state import is_scrolllock
 
 #Enabled/Disable Debug Mode
 DEBUGMODE = False
@@ -23,9 +22,6 @@ def second_thread():
 
 def main():
     """main gui thread"""
-    #Original Scroll Lock State
-    logging.debug("Starting Scrol Lock Position: %s", str(is_scrolllock()))
-
     #Create the Window
     window = tk.Tk()
     window.wm_attributes("-topmost", 1) #always on top
