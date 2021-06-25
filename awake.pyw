@@ -26,7 +26,7 @@ def main():
     window = tk.Tk()
     window.wm_attributes("-topmost", 1) #always on top
     window.resizable(0, 0) #no maximise button
-    window.title("Keep Awake")
+    window.title("Stay Awake!")
     window.iconbitmap("./icon/awake-icon.ico")
     window.geometry("256x256")
 
