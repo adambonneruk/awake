@@ -14,6 +14,13 @@ pip install pyautogui
 py awake.pyw
 ```
 
+### Alt Config
+I was having issues with certs and stuff, this worked to fix!
+```ps
+python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pip
+python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org pyautogui
+```
+
 ## Screenshot
 ```awake``` looks like this when running in Windows 10:
 
