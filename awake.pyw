@@ -26,12 +26,12 @@ def main():
     window = tk.Tk()
     window.wm_attributes("-topmost", 1) #always on top
     window.resizable(0, 0) #no maximise button
-    window.title("Stay Awake!")
-    window.iconbitmap("./icon/awake-icon.ico")
-    window.geometry("256x256")
+    window.title("Stay Awake, Don't Sleep!")
+    window.iconbitmap("./icon/ZZZZ.ico")
+    window.geometry("512x256")
 
     #Add an Image
-    img = tk.PhotoImage(file="img/background.png")
+    img = tk.PhotoImage(file="image/ZZZZ.png")
     img_label = tk.Label(window, image=img)
     img_label.pack()
 
