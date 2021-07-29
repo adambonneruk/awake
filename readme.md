@@ -9,7 +9,7 @@ I built this tool to solve a problem, learn about ```tkinter```, ```pyautogui```
 
 Why you want to use this application for yourself? for? I have no idea!
 
-## Install Guide (using _chololatey_)
+## Install Guide (using _chololatey_ and _pip_)
 Python, PIP and PyAutoGUI
 ```powershell
 # install python using chocolatey
