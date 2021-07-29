@@ -2,8 +2,11 @@
 import threading
 import time
 import logging
-import tkinter as tk
 from pyautogui import press
+from pystray import MenuItem as item
+import pystray
+from PIL import Image
+import tkinter as tk
 
 #Enabled/Disable Debug Mode
 DEBUGMODE = False
@@ -38,6 +41,25 @@ def main():
     #Launch Second (Scroll Lock Button Pressing) Thread
     thread = threading.Thread(target=second_thread)
     thread.start()
+
+    #Functions used for tray icon code
+    def quit_window(icon, item):
+        icon.stop()
+        window.destroy()
+
+    def show_window(icon, item):
+        icon.stop()
+        window.after(0,window.deiconify)
+
+    def withdraw_window():
+        window.withdraw()
+        image = Image.open("./icon/Z.ico")
+        menu = (item('Quit', quit_window), item('Show', show_window))
+        icon = pystray.Icon("name", image, "title", menu)
+        icon.run()
+
+    #Close to Tray
+    window.protocol("WM_DELETE_WINDOW", withdraw_window)
 
     #Main tkinter window loop
     window.mainloop()
