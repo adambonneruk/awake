@@ -5,6 +5,13 @@
 
 I built this tool to solve a problem, learn about ```tkinter```, ```pyautogui``` and python ```threading```. Displaying a basic GUI while a second thread takes care of the automation. Interestingly I always press the scroll lock key twice, this means if you started the utility, came back to your machine 30 minutes later and closes it, the "even" number of presses means your scroll lock "state" would be the same as before you left!
 
+## Usage
+The App starts in the system tray (with the ![Z](icon/22.png) icon).
+
+![Running in the Windows 10 System Tray](.screenshot/in-the-tray.png)
+
+A right-click context menu allowing you to "```Show```" the main GUI  (below) or "```Quit```" and close the application. The GUI close cross again minimises to the system tray.
+
 ![Running awake.pyw on Windows 10](.screenshot/stay-awake-dont-sleep.png)
 
 Why you want to use this application for yourself? for? I have no idea!
