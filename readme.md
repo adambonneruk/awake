@@ -14,7 +14,7 @@ A right-click context menu allowing you to "```Show```" the main GUI  (below) or
 
 ![Running awake.pyw on Windows 10](.screenshot/stay-awake-dont-sleep.png)
 
-Why you want to use this application for yourself? for? I have no idea!
+What you would want to use this application for? I have no idea!
 
 ## Install Guide (using _chololatey_ and _pip_)
 Python, PIP and PyAutoGUI
