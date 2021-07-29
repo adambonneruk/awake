@@ -54,12 +54,15 @@ def main():
     def withdraw_window():
         window.withdraw()
         image = Image.open("./icon/Z.ico")
-        menu = (item('Quit', quit_window), item('Show', show_window))
-        icon = pystray.Icon("name", image, "title", menu)
+        menu = (item('Show', show_window), item('Quit', quit_window))
+        icon = pystray.Icon("name", image, "Stay Awake, Don't Sleep!", menu)
         icon.run()
 
     #Close to Tray
     window.protocol("WM_DELETE_WINDOW", withdraw_window)
+
+    #Start in Tray
+    withdraw_window()
 
     #Main tkinter window loop
     window.mainloop()
