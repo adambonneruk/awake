@@ -1,4 +1,4 @@
-"""foobar"""
+"""awake: a small utility to keep a windows machine from going asleep"""
 import threading
 import time
 import logging
