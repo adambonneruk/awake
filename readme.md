@@ -17,7 +17,7 @@ A right-click context menu allowing you to "```Show```" the main GUI  (below) or
 What you would want to use this application for? I have no idea!
 
 ## Install Guide (using _chololatey_ and _pip_)
-Python, PIP and PyAutoGUI
+Python, PIP, PyAutoGUI, and PyStray
 ```powershell
 # install python using chocolatey
 choco install python -y
@@ -26,7 +26,7 @@ python -m pip install --trusted-host pypi.python.org --trusted-host files.python
 # install pyautogui using pip
 python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pyautogui
 # install pylance using pip
-python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pylance
+python -m pip install --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org --upgrade pystray
 # run awake.pyw
 py ./awake.pyw
 ```
