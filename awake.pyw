@@ -2,6 +2,7 @@
 import threading
 import time
 import logging
+import pyautogui
 from pyautogui import press
 from pystray import MenuItem as item
 import pystray
@@ -14,9 +15,10 @@ if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUG MODE ACTIVE")
 
-def second_thread():
+def thread_toggle_scrolllock():
     """handles launching of a second thread"""
     logging.debug("2nd Thread Start")
+    pyautogui.FAILSAFE = False # fixes thread dying when cursor corner of screen
     while getattr(threading.currentThread(), "do_run", True):
         for _ in range(0, 2): #always do it twice, so scrollock returns to original state
             press('scrolllock')
@@ -39,7 +41,7 @@ def main():
     img_label.pack()
 
     #Launch Second (Scroll Lock Button Pressing) Thread
-    thread = threading.Thread(target=second_thread)
+    thread = threading.Thread(target=thread_toggle_scrolllock)
     thread.start()
 
     #Functions used for tray icon code
