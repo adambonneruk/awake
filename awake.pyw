@@ -19,7 +19,7 @@ def thread_toggle_scrolllock():
     """handles launching of a second thread"""
     logging.debug("2nd Thread Start")
     pyautogui.FAILSAFE = False # fixes thread dying when cursor corner of screen
-    while getattr(threading.currentThread(), "do_run", True):
+    while getattr(threading.current_thread(), "do_run", True):
         for _ in range(0, 2): #always do it twice, so scrollock returns to original state
             press('scrolllock')
             time.sleep(0.4) ##400ms
