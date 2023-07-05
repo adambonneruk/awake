@@ -1,33 +1,42 @@
 """awake: a small utility to keep a windows machine from going asleep"""
-import threading
-import time
-import logging
-import pyautogui
+import threading, time, logging, pyautogui
 from pyautogui import press
 from pystray import MenuItem as item
 import pystray
 from PIL import Image
 import tkinter as tk
 
-#Enabled/Disable Debug Mode
+# Enabled/Disable Debug Mode
 DEBUGMODE = False
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUG MODE ACTIVE")
 
+# Global Varibles
+tick = 0.4 # is 400ms
+toggling = True # we start the program actively toggling
+
 def thread_toggle_scrolllock():
     """handles launching of a second thread"""
+    global toggling, tick
     logging.debug("2nd Thread Start")
     pyautogui.FAILSAFE = False # fixes thread dying when cursor corner of screen
     while getattr(threading.current_thread(), "do_run", True):
-        for _ in range(0, 2): #always do it twice, so scrollock returns to original state
-            press('scrolllock')
-            time.sleep(0.4) ##400ms
+        if toggling:
+            for _ in range(0, 2): #always do it twice, so scrollock returns to original state
+                time.sleep(tick) 
+                logging.debug("toggling: " + str(toggling))
+                press('scrolllock')
+        else:
+            time.sleep(tick*2) # double the normal tick as we arnt in that twice for loop
+            logging.debug("toggling: " + str(toggling))
     logging.debug("2nd Thread Stop")
 
 def main():
     """main gui thread"""
-    #Create the Window
+    global toggling
+
+    # Create the Window
     window = tk.Tk()
     window.wm_attributes("-topmost", 1) #always on top
     window.resizable(0, 0) #no maximise button
@@ -35,16 +44,17 @@ def main():
     window.iconbitmap("./icon/ZZZZ.ico")
     window.geometry("512x256")
 
-    #Add an Image
+    # Add an Image
     img = tk.PhotoImage(file="image/ZZZZ.png")
     img_label = tk.Label(window, image=img)
     img_label.pack()
 
-    #Launch Second (Scroll Lock Button Pressing) Thread
+    # Launch Second (Scroll Lock Button Pressing) Thread
+    logging.debug("toggling: " + str(toggling))
     thread = threading.Thread(target=thread_toggle_scrolllock)
     thread.start()
 
-    #Functions used for tray icon code
+    # Functions used for tray icon code
     def quit_window(icon, item):
         icon.stop()
         window.destroy()
@@ -53,10 +63,15 @@ def main():
         icon.stop()
         window.after(0,window.deiconify)
 
+    def stop_or_start():
+        logging.debug("pause functionality trigger")
+        global toggling
+        toggling = not toggling # flip true to false or vice-versa
+
     def withdraw_window():
         window.withdraw()
         image = Image.open("./icon/Z.ico")
-        menu = (item('Show', show_window), item('Quit', quit_window))
+        menu = (item('Show', show_window), item("Start/Stop", stop_or_start), item('Quit', quit_window))
         icon = pystray.Icon("name", image, "Stay Awake, Don't Sleep!", menu)
         icon.run()
 
@@ -70,6 +85,8 @@ def main():
     window.mainloop()
 
     #Kill Second Thread
+    toggling = False
+    logging.debug(toggling)
     thread.do_run = False
     thread.join()
 
