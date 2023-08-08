@@ -8,7 +8,7 @@ import tkinter as tk
 import os
 
 # Enabled/Disable Debug Mode
-DEBUGMODE = False
+DEBUGMODE = True
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUG MODE ACTIVE")
@@ -24,18 +24,28 @@ def thread_toggle_scrolllock():
     pyautogui.FAILSAFE = False # fixes thread dying when cursor corner of screen
     while getattr(threading.current_thread(), "do_run", True):
         if toggling:
-            for _ in range(0, 2): #always do it twice, so scrollock returns to original state
-                time.sleep(tick) 
-                logging.debug("toggling: " + str(toggling))
-                press('scrolllock')
-        else:
-            time.sleep(tick*2) # double the normal tick as we arnt in that twice for loop
+            time.sleep(tick) 
             logging.debug("toggling: " + str(toggling))
+            press('scrolllock')
+        else:
+            time.sleep(tick)
+            logging.debug("not toggling: " + str(toggling))
     logging.debug("2nd Thread Stop")
 
+def get_scrolllock_state():
+    import ctypes
+    hllDll = ctypes.WinDLL ("User32.dll")
+    VK_SCROLL = 0x91 #https://learn.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+    return hllDll.GetKeyState(VK_SCROLL)
+    
 def main():
     """main gui thread"""
     global toggling
+
+    # get scrollock state (so we can restore later)
+    logging.debug("original scroll state:")
+    og_scroll_state = get_scrolllock_state()
+    logging.debug(og_scroll_state)
 
     # set the base directory for executable portability
     basedir = os.path.dirname(__file__)
@@ -93,6 +103,10 @@ def main():
     logging.debug(toggling)
     thread.do_run = False
     thread.join()
+
+    # if state is not og, return scroll lock state to original by press scroll lock key
+    if og_scroll_state != get_scrolllock_state:
+        press('scrolllock')
 
 if __name__ == "__main__":
     main()
