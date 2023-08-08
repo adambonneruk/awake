@@ -8,7 +8,7 @@ import tkinter as tk
 import os
 
 # Enabled/Disable Debug Mode
-DEBUGMODE = False
+DEBUGMODE = True
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUG MODE ACTIVE")
@@ -16,10 +16,17 @@ if DEBUGMODE:
 # Global Varibles
 tick = 0.4 # is 400ms
 toggling = True # we start the program actively toggling
+og_scroll_state = 0
+
+def get_scrolllock_state():
+    import ctypes
+    hllDll = ctypes.WinDLL ("User32.dll")
+    VK_SCROLL = 0x91 #https://learn.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
+    return hllDll.GetKeyState(VK_SCROLL)
 
 def thread_toggle_scrolllock():
     """handles launching of a second thread"""
-    global toggling, tick
+    global toggling, tick, og_scroll_state
     logging.debug("2nd Thread Start")
     pyautogui.FAILSAFE = False # fixes thread dying when cursor corner of screen
     while getattr(threading.current_thread(), "do_run", True):
@@ -28,24 +35,23 @@ def thread_toggle_scrolllock():
             logging.debug("toggling: " + str(toggling))
             press('scrolllock')
         else:
+            # if state is not og, return scroll lock state to original by press scroll lock key
             time.sleep(tick)
             logging.debug("not toggling: " + str(toggling))
+            if og_scroll_state != get_scrolllock_state():
+                press('scrolllock')
     logging.debug("2nd Thread Stop")
 
-def get_scrolllock_state():
-    import ctypes
-    hllDll = ctypes.WinDLL ("User32.dll")
-    VK_SCROLL = 0x91 #https://learn.microsoft.com/en-gb/windows/win32/inputdev/virtual-key-codes?redirectedfrom=MSDN
-    return hllDll.GetKeyState(VK_SCROLL)
-    
 def main():
     """main gui thread"""
     global toggling
+    global og_scroll_state
 
     # get scrollock state (so we can restore later)
     logging.debug("original scroll state:")
     og_scroll_state = get_scrolllock_state()
     logging.debug(og_scroll_state)
+    print(og_scroll_state)
 
     # set the base directory for executable portability
     basedir = os.path.dirname(__file__)
@@ -105,8 +111,19 @@ def main():
     thread.join()
 
     # if state is not og, return scroll lock state to original by press scroll lock key
-    if og_scroll_state != get_scrolllock_state:
+    print("wait 2 sec")
+    time.sleep(2)
+    print("og")
+    print(og_scroll_state)
+    print("current post 2nd thread")
+    print(get_scrolllock_state())
+    if str(og_scroll_state) != str(get_scrolllock_state()):
+        print("in the if")
         press('scrolllock')
+    print("end of prog")
+    print("wait 2")
+    time.sleep(2)
+    print(get_scrolllock_state())
 
 if __name__ == "__main__":
     main()
