@@ -5,6 +5,7 @@ from pystray import MenuItem as item
 import pystray
 from PIL import Image
 import tkinter as tk
+import os
 
 # Enabled/Disable Debug Mode
 DEBUGMODE = False
@@ -36,16 +37,19 @@ def main():
     """main gui thread"""
     global toggling
 
+    # set the base directory for executable portability
+    basedir = os.path.dirname(__file__)
+
     # Create the Window
     window = tk.Tk()
     window.wm_attributes("-topmost", 1) #always on top
     window.resizable(0, 0) #no maximise button
     window.title("Stay Awake, Don't Sleep!")
-    window.iconbitmap("./icon/ZZZZ.ico")
+    window.iconbitmap(os.path.join(basedir, "assets\\awake.ico"))
     window.geometry("512x256")
 
     # Add an Image
-    img = tk.PhotoImage(file="image/ZZZZ.png")
+    img = tk.PhotoImage(file=os.path.join(basedir, "assets\\ZZZZ.png"))
     img_label = tk.Label(window, image=img)
     img_label.pack()
 
@@ -70,7 +74,7 @@ def main():
 
     def withdraw_window():
         window.withdraw()
-        image = Image.open("./icon/Z.ico")
+        image = Image.open(os.path.join(basedir, "assets\\awake-icon-64.png"))
         menu = (item('Show', show_window), item("Start/Stop", stop_or_start), item('Quit', quit_window))
         icon = pystray.Icon("name", image, "Stay Awake, Don't Sleep!", menu)
         icon.run()
