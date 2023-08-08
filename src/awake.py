@@ -8,7 +8,7 @@ import tkinter as tk
 import os
 
 # Enabled/Disable Debug Mode
-DEBUGMODE = True
+DEBUGMODE = False
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUG MODE ACTIVE")
