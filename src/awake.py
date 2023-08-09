@@ -4,7 +4,7 @@ import tkinter as tk
 from pystray import MenuItem as item
 from PIL import Image
 
-DEBUGMODE = True
+DEBUGMODE = False
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUGMODE = True")
