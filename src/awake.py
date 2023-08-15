@@ -4,7 +4,7 @@ import tkinter as tk
 from pystray import MenuItem as item
 from PIL import Image
 
-DEBUGMODE = False
+DEBUGMODE = True
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     logging.debug("DEBUGMODE = True")
@@ -16,6 +16,8 @@ def main():
     # 0x00000002 | ES_DISPLAY_REQUIRED | Forces the display to be on by resetting the display idle timer
     ctypes.windll.kernel32.SetThreadExecutionState(0x80000002)
     logging.debug("SetThreadExecutionState = 0x80000002")
+    global awake_state
+    awake_state = True
 
     # set the base directory for executable portability
     basedir = os.path.dirname(__file__)
@@ -42,11 +44,27 @@ def main():
         icon.stop()
         window.after(0,window.deiconify)
 
+    def pause_awakeness(icon, item):
+        """pause awakeness by changing awake_state and changing win32 thread execution state"""
+        global awake_state
+        logging.debug("old awake state = " + str(awake_state))
+        awake_state = not(awake_state)
+        logging.debug("new awake state = " + str(awake_state))
+
+        if awake_state:
+            icon.icon = Image.open(os.path.join(basedir, "assets\\awake-icon-64.png"))
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000002) #keep awake
+            logging.debug("SetThreadExecutionState = 0x80000002")
+        else:
+            icon.icon = Image.open(os.path.join(basedir, "assets\\awake-icon-64-off.png"))
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000000) # return to normal
+            logging.debug("SetThreadExecutionState = 0x80000000")
+
     def withdraw_window():
         """Run the application in the tray instead of a window, build the icon and menu"""
         window.withdraw()
         image = Image.open(os.path.join(basedir, "assets\\awake-icon-64.png"))
-        menu = (item('Show', show_window), item('Quit', quit_window))
+        menu = (item('Show', show_window), item('Start/Pause', pause_awakeness), item('Quit', quit_window))
         icon = pystray.Icon("name", image, "prevent the system from entering sleep", menu)
         icon.run()
 
