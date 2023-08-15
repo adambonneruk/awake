@@ -44,6 +44,14 @@ def main():
         icon.stop()
         window.after(0,window.deiconify)
 
+    def icon_for_state():
+        """load different image path for icon based on awakeness state"""
+        global awake_state
+        if awake_state:
+            return str(os.path.join(basedir, "assets\\awake-icon-64.png"))
+        else:
+            return str(os.path.join(basedir, "assets\\awake-icon-64-off.png"))
+
     def pause_awakeness(icon, item):
         """pause awakeness by changing awake_state and changing win32 thread execution state"""
         global awake_state
@@ -52,18 +60,18 @@ def main():
         logging.debug("new awake state = " + str(awake_state))
 
         if awake_state:
-            icon.icon = Image.open(os.path.join(basedir, "assets\\awake-icon-64.png"))
+            icon.icon = Image.open(icon_for_state())
             ctypes.windll.kernel32.SetThreadExecutionState(0x80000002) #keep awake
             logging.debug("SetThreadExecutionState = 0x80000002")
         else:
-            icon.icon = Image.open(os.path.join(basedir, "assets\\awake-icon-64-off.png"))
+            icon.icon = Image.open(icon_for_state())
             ctypes.windll.kernel32.SetThreadExecutionState(0x80000000) # return to normal
             logging.debug("SetThreadExecutionState = 0x80000000")
 
     def withdraw_window():
         """Run the application in the tray instead of a window, build the icon and menu"""
         window.withdraw()
-        image = Image.open(os.path.join(basedir, "assets\\awake-icon-64.png"))
+        image = Image.open(icon_for_state())
         menu = (item('Show', show_window), item('Start/Pause', pause_awakeness), item('Quit', quit_window))
         icon = pystray.Icon("name", image, "prevent the system from entering sleep", menu)
         icon.run()
