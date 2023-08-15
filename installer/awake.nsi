@@ -7,7 +7,7 @@
 
 ; defines
 !define $PRODUCT_NAME "Awake"
-!define $APPVERSION "v0.5.2"
+!define $APPVERSION "v0.5.3"
 !define $PRODUCT_PUBLISHER "adambonneruk"
 !define $ICON_PATH "..\src\assets\awake.ico"
 !define $REG_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\Awake"
