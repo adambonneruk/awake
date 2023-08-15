@@ -7,7 +7,7 @@
 
 ; defines
 !define $PRODUCT_NAME "Awake"
-!define $APPVERSION "v0.5.1"
+!define $APPVERSION "v0.5.2"
 !define $PRODUCT_PUBLISHER "adambonneruk"
 !define $ICON_PATH "..\src\assets\awake.ico"
 !define $REG_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\Awake"
@@ -19,13 +19,12 @@ Unicode True
 
 ; settings
 Name "${$PRODUCT_NAME} ${$APPVERSION}"
-OutFile "Awake Installer (${$APPVERSION}).exe"
+OutFile "Awake Installer x64 (${$APPVERSION}).exe"
 BrandingText "${$PRODUCT_PUBLISHER}"
 
 ; gui configuration
 !define MUI_ICON ${$ICON_PATH}
 !define MUI_UNICON ${$ICON_PATH}
-!define MUI_ABORTWARNING ; "are you sure you want to quit?" prompt
 !define MUI_WELCOMEFINISHPAGE_BITMAP "assets\wizard.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP ".\assets\header.bmp"
@@ -45,20 +44,14 @@ BrandingText "${$PRODUCT_PUBLISHER}"
 Section "Base Files" SecBaseFiles
 
 	SectionIn RO ; read-only
+	StrCpy $INSTDIR "$PROGRAMFILES64\Awake"
 	SetOutPath $INSTDIR
 	DetailPrint "Cleaning install directory"
 	RMDIR /r $INSTDIR\*.* ; clean the installation directory
-
-	; copy files given x86 or x86-64 operating system
-	${If} ${RunningX64}
-		DetailPrint "64-Bit Mode"
-		File /r ..\dist\awake\*.*
-	${else}
-		DetailPrint "32-Bit Mode"
-		File /r ..\dist\awake\*.*
-	${EndIf}
+	File /r ..\dist\awake\*.* ; copy files given x86-64 operating system
 
 	; add uninstaller entry to the add/remove programs control panel
+	SetRegView 64 ; set registry view given x86-64 operating system
 	WriteRegStr HKLM "${$REG_PATH}" "DisplayName" "${$PRODUCT_NAME}"
 	WriteRegStr HKLM "${$REG_PATH}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 	WriteRegStr HKLM "${$REG_PATH}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
@@ -90,19 +83,6 @@ Section "Desktop Shortcut" SecDeskShort
 
 SectionEnd
 
-Function .onInit
-
-	; set install folder given x86 or x86-64 operating system
-	${If} ${RunningX64}
-		StrCpy $INSTDIR "$PROGRAMFILES64\Awake"
-		SetRegView 64
-	${else}
-		StrCpy $INSTDIR "$PROGRAMFILES\Awake"
-		SetRegView 32
-	${EndIf}
-
-FunctionEnd
-
 ; component descriptions
 LangString DESC_SecBaseFiles ${LANG_ENGLISH} 	"Install the Awake program and all dependencies"
 LangString DESC_SecStartMenu ${LANG_ENGLISH} 	"Install Windows Start Menu shortcuts"
@@ -124,13 +104,7 @@ Section "Uninstall"
 	Delete "$SMPROGRAMS\Awake\*.lnk"
 	RMDir "$SMPROGRAMS\Awake"
 
-	; set registry view given x86 or x86-64 operating system
-	${If} ${RunningX64}
-		SetRegView 64
-	${else}
-		SetRegView 32
-	${EndIf}
-
+	SetRegView 64 ; set registry view given x86-64 operating system
 	DeleteRegKey HKLM "${$REG_PATH}" ; delete windows add/remove programs key
 
 SectionEnd
