@@ -3,7 +3,7 @@ import logging, pystray, os, ctypes
 from pystray import MenuItem as item
 from PIL import Image
 
-DEBUGMODE = True
+DEBUGMODE = False
 if DEBUGMODE:
     logging.basicConfig(format='%(message)s', level=logging.INFO) # PIL uses debug, info cleaner
     logging.info("DEBUGMODE = True")
