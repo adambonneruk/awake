@@ -55,6 +55,7 @@ def main():
 
     def withdraw_window():
         """Run the application in the tray instead of a window, build the icon and menu"""
+        ctypes.windll['uxtheme.dll'][135](1) # dark mode support
         image = Image.open(icon_for_state())
         menu = (item('Start/Pause', pause_awakeness), item('Quit', stop))
         icon = pystray.Icon("name", image, "prevent the system from entering sleep", menu)
