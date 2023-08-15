@@ -19,7 +19,7 @@ Unicode True
 
 ; settings
 Name "${$PRODUCT_NAME} ${$APPVERSION}"
-OutFile "Awake Installer x64 (${$APPVERSION}).exe"
+OutFile "Awake Installer (${$APPVERSION}) x64.exe"
 BrandingText "${$PRODUCT_PUBLISHER}"
 
 ; gui configuration
@@ -44,7 +44,6 @@ BrandingText "${$PRODUCT_PUBLISHER}"
 Section "Base Files" SecBaseFiles
 
 	SectionIn RO ; read-only
-	StrCpy $INSTDIR "$PROGRAMFILES64\Awake"
 	SetOutPath $INSTDIR
 	DetailPrint "Cleaning install directory"
 	RMDIR /r $INSTDIR\*.* ; clean the installation directory
@@ -58,7 +57,7 @@ Section "Base Files" SecBaseFiles
 	WriteRegStr HKLM "${$REG_PATH}" "DisplayIcon" "$\"$INSTDIR\assets\awake.ico$\""
 	WriteRegStr HKLM "${$REG_PATH}" "DisplayVersion" "${$APPVERSION}"
 	WriteRegStr HKLM "${$REG_PATH}" "Publisher" "${$PRODUCT_PUBLISHER}" ; Not show in Windows 10
-	WriteRegDWORD HKLM "${$REG_PATH}" "EstimatedSize" 26986 ; Calculated size based on v0.5.0
+	WriteRegDWORD HKLM "${$REG_PATH}" "EstimatedSize" 19558 ; Calculated size based on v0.5.2, in KiB
 	WriteRegDWORD HKLM "${$REG_PATH}" "NoModify" 1
 	WriteRegDWORD HKLM "${$REG_PATH}" "NoRepair" 1
 
@@ -82,6 +81,13 @@ Section "Desktop Shortcut" SecDeskShort
 	CreateShortcut "$DESKTOP\${$PRODUCT_NAME}.lnk" "$INSTDIR\Awake.exe" "" "$INSTDIR\assets\awake.ico" 0
 
 SectionEnd
+
+Function .onInit
+
+	; set install folder given x86-64 operating system
+	StrCpy $INSTDIR "$PROGRAMFILES64\Awake"
+
+FunctionEnd
 
 ; component descriptions
 LangString DESC_SecBaseFiles ${LANG_ENGLISH} 	"Install the Awake program and all dependencies"
