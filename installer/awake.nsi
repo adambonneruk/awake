@@ -7,7 +7,7 @@
 
 ; defines
 !define $PRODUCT_NAME "Awake"
-!define $APPVERSION "v0.5.1"
+!define $APPVERSION "v0.5.2"
 !define $PRODUCT_PUBLISHER "adambonneruk"
 !define $ICON_PATH "..\src\assets\awake.ico"
 !define $REG_PATH "Software\Microsoft\Windows\CurrentVersion\Uninstall\Awake"
@@ -19,13 +19,12 @@ Unicode True
 
 ; settings
 Name "${$PRODUCT_NAME} ${$APPVERSION}"
-OutFile "Awake Installer (${$APPVERSION}).exe"
+OutFile "Awake Installer (${$APPVERSION}) x64.exe"
 BrandingText "${$PRODUCT_PUBLISHER}"
 
 ; gui configuration
 !define MUI_ICON ${$ICON_PATH}
 !define MUI_UNICON ${$ICON_PATH}
-!define MUI_ABORTWARNING ; "are you sure you want to quit?" prompt
 !define MUI_WELCOMEFINISHPAGE_BITMAP "assets\wizard.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP ".\assets\header.bmp"
@@ -48,24 +47,17 @@ Section "Base Files" SecBaseFiles
 	SetOutPath $INSTDIR
 	DetailPrint "Cleaning install directory"
 	RMDIR /r $INSTDIR\*.* ; clean the installation directory
-
-	; copy files given x86 or x86-64 operating system
-	${If} ${RunningX64}
-		DetailPrint "64-Bit Mode"
-		File /r ..\dist\awake\*.*
-	${else}
-		DetailPrint "32-Bit Mode"
-		File /r ..\dist\awake\*.*
-	${EndIf}
+	File /r ..\dist\awake\*.* ; copy files given x86-64 operating system
 
 	; add uninstaller entry to the add/remove programs control panel
+	SetRegView 64 ; set registry view given x86-64 operating system
 	WriteRegStr HKLM "${$REG_PATH}" "DisplayName" "${$PRODUCT_NAME}"
 	WriteRegStr HKLM "${$REG_PATH}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
 	WriteRegStr HKLM "${$REG_PATH}" "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\" /S"
 	WriteRegStr HKLM "${$REG_PATH}" "DisplayIcon" "$\"$INSTDIR\assets\awake.ico$\""
 	WriteRegStr HKLM "${$REG_PATH}" "DisplayVersion" "${$APPVERSION}"
 	WriteRegStr HKLM "${$REG_PATH}" "Publisher" "${$PRODUCT_PUBLISHER}" ; Not show in Windows 10
-	WriteRegDWORD HKLM "${$REG_PATH}" "EstimatedSize" 26986 ; Calculated size based on v0.5.0
+	WriteRegDWORD HKLM "${$REG_PATH}" "EstimatedSize" 19558 ; Calculated size based on v0.5.2, in KiB
 	WriteRegDWORD HKLM "${$REG_PATH}" "NoModify" 1
 	WriteRegDWORD HKLM "${$REG_PATH}" "NoRepair" 1
 
@@ -92,14 +84,8 @@ SectionEnd
 
 Function .onInit
 
-	; set install folder given x86 or x86-64 operating system
-	${If} ${RunningX64}
-		StrCpy $INSTDIR "$PROGRAMFILES64\Awake"
-		SetRegView 64
-	${else}
-		StrCpy $INSTDIR "$PROGRAMFILES\Awake"
-		SetRegView 32
-	${EndIf}
+	; set install folder given x86-64 operating system
+	StrCpy $INSTDIR "$PROGRAMFILES64\Awake"
 
 FunctionEnd
 
@@ -124,13 +110,7 @@ Section "Uninstall"
 	Delete "$SMPROGRAMS\Awake\*.lnk"
 	RMDir "$SMPROGRAMS\Awake"
 
-	; set registry view given x86 or x86-64 operating system
-	${If} ${RunningX64}
-		SetRegView 64
-	${else}
-		SetRegView 32
-	${EndIf}
-
+	SetRegView 64 ; set registry view given x86-64 operating system
 	DeleteRegKey HKLM "${$REG_PATH}" ; delete windows add/remove programs key
 
 SectionEnd
