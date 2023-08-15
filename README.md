@@ -35,18 +35,21 @@ venv/Scripts/Activate.ps1
 
 # install pip prereqs
 py -m pip install -r .\requirements.txt --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --trusted-host pypi.org
+
+# list pip installs inside the venv
+pip freeze
 ```
 
 ### Compile
 ```ps
 # compile manually
-pyinstaller "src/awake.spec" --noconfirm
+pyinstaller 'src/awake.spec' --noconfirm
 
 package with nsis manually
-makensis installer/awake.nsi
+makensis 'installer/awake.nsi'
 
 # run both automatically
-py "tools/make.py"
+py 'tools/make.py'
 ```
 
 ## Further Reading
